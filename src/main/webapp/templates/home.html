@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('background.jpg') no-repeat fixed center;
+            background-size: cover;
+            color: #e0e0e0;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .form-control {
+            background-color: #2e3d49;
+            border: 1px solid #1b2a36;
+            color: #e0e0e0;
+        }
+
+        .btn-primary {
+            background-color: #4caf50;
+            border-color: #388e3c;
+        }
+
+        .btn-primary:hover {
+            background-color: #388e3c;
+            border-color: #2e7d32;
+        }
+
+        .btn-danger {
+            background-color: #d9534f;
+            border-color: #d43f3a;
+        }
+
+        .btn-danger:hover {
+            background-color: #c9302c;
+            border-color: #ac2925;
+        }
+
+        .location-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        .location-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        .trash-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Weather App</h2>
+        <div>
+            <!--/*@thymesVar id="userName" type="String"*/-->
+            <span th:text="${userName}" style="font-weight: bold;"></span>
+            <a href="/logout" class="btn btn-warning">Logout</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h4>Locations</h4>
+            <div class="location-list">
+                <!--/*@thymesVar id="listLocations" type="java.util.List"*/-->
+                <!-- /*@thymesVar id="location" type="com.example.weather_project.model.Location"*/-->
+                <div th:if="${listLocations != null and listLocations.size() > 0}">
+                    <div th:each="location : ${listLocations}">
+                        <div class="location-item">
+                            <a href="#" th:href="@{/home(nowLocationId=${location.id})}"
+                               th:text="${location.name}">Location Name</a>
+                            <img src="trash-icon.png" alt="Delete" class="trash-icon"
+                                 th:onclick="'deleteLocation(' + ${location.id} + ')'">
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${listLocations == null or listLocations.size() == 0}">
+                    <p>No locations added.</p>
+                </div>
+            </div>
+            <!--/*@thymesVar id="listLocations" type="java.util.List"*/-->
+            <div th:if="${listLocations.size() < 10}">
+                <form th:action="@{/home}" method="post">
+                    <div class="mb-3">
+                        <label for="place" class="form-label">Add Location</label>
+                        <input type="text" class="form-control" id="place" name="place" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Add Location</button>
+                </form>
+            </div>
+            <div th:if="${listLocations.size() >= 10}">
+                <p>You cannot add more than 10 locations.</p>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h4>Current Location</h4>
+            <div th:if="${newWeatherPlace != null}">
+                <h4>New Weather Data</h4>
+                <p>Температура в градусах цельсия: <span th:text="${newWeatherPlace.tempC}"></span>°C</p>
+                <p>Температура ощущается как: <span th:text="${newWeatherPlace.feelsLikeC}"></span>°C</p>
+                <p>Атмосферное давление: <span th:text="${newWeatherPlace.pressure}"></span> hPa</p>
+                <p>Скорость ветра: <span th:text="${newWeatherPlace.windSpeedKmPh}"></span> km/h</p>
+                <p>Направление ветра: <span th:text="${newWeatherPlace.windDirDegree}"></span> °</p>
+                <p>Описание погоды:</p>
+                <ul>
+                    <li th:each="desc : ${newWeatherPlace.weatherDesc}" th:text="${desc.value}"></li>
+                </ul>
+            </div>
+            <!-- Проверка на наличие nowWeatherPlace если newWeatherPlace null -->
+            <!--/*@thymesVar id="newWeatherPlace" type="com.example.weather_project.model.WeatherData"*/-->
+            <div th:if="${newWeatherPlace == null and nowWeatherPlace != null}">
+                <h4>Current Weather Data</h4>
+                <p>Температура в градусах цельсия:
+                    <!--/*@thymesVar id="nowWeatherPlace" type="com.example.weather_project.model.WeatherData"*/-->
+                <span th:text="${nowWeatherPlace.tempC}"></span>°C</p>
+                <p>Температура ощущается как:
+                    <!--/*@thymesVar id="nowWeatherPlace" type="com.example.weather_project.model.WeatherData"*/-->
+                <span th:text="${nowWeatherPlace.feelsLikeC}"></span>°C</p>
+                <p>Атмосферное давление:
+                    <!--/*@thymesVar id="nowWeatherPlace" type="com.example.weather_project.model.WeatherData"*/-->
+                <span th:text="${nowWeatherPlace.pressure}"></span> hPa</p>
+                <p>Скорость ветра:
+                    <!--/*@thymesVar id="nowWeatherPlace" type="com.example.weather_project.model.WeatherData"*/-->
+                <span th:text="${nowWeatherPlace.windSpeedKmPh}"></span> km/h</p>
+                <p>Направление ветра:
+                    <!--/*@thymesVar id="nowWeatherPlace" type="com.example.weather_project.model.WeatherData"*/-->
+                <span th:text="${nowWeatherPlace.windDirDegree}"></span> °</p>
+                <p>Описание погоды:</p>
+                <ul>
+                    <!--/*@thymesVar id="nowWeatherPlace" type="com.example.weather_project.model.WeatherData"*/-->
+                    <li th:each="desc : ${nowWeatherPlace.weatherDesc}" th:text="${desc.value}"></li>
+                </ul>
+            </div>
+            <!-- Проверка на отсутствие данных о погоде -->
+            <!--/*@thymesVar id="nowWeatherPlace" type="com.example.weather_project.model.WeatherData"*/-->
+            <div th:if="${newWeatherPlace == null and nowWeatherPlace == null}">
+                <p>No weather data available.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="userIdInput" name="user_id" value="/*[[${userId}]]*/">
+<script>
+    const userIdInput = document.getElementById('userIdInput');
+    const userId = userIdInput ? userIdInput.value : null;
+
+    function deleteLocation(locationId) {
+        const form = document.createElement('form');
+        form.method = 'post';
+        form.action = '/api/del/location';
+
+        const locationIdInput = document.createElement('input');
+        locationIdInput.type = 'hidden';
+        locationIdInput.name = 'location_id';
+        locationIdInput.value = locationId;
+        form.appendChild(locationIdInput);
+
+        if (userId) {
+            const userIdInput = document.createElement('input');
+            userIdInput.type = 'hidden';
+            userIdInput.name = 'user_id';
+            userIdInput.value = userId;
+            form.appendChild(userIdInput);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+</body>
+</html>

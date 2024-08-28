@@ -1,4 +1,4 @@
-package configs;
+package com.example.weather_project.configs;
 
 import lombok.Getter;
 import org.thymeleaf.TemplateEngine;
@@ -7,10 +7,12 @@ import org.thymeleaf.templatemode.TemplateMode;
 
 @Getter
 public class ThymeleafConfig {
+
     private final TemplateEngine templateEngine;
+
     public ThymeleafConfig() {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setPrefix("/WEB-INF/templates/");
+        templateResolver.setPrefix("");
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setCacheTTLMs(3600000L);
