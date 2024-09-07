@@ -20,7 +20,7 @@ public class ConnectionManager {
 
     public SessionFactory getSessionFactory() {
         sessionFactory = new Configuration()
-                .configure("hibernate.cfg.xml")
+                .configure()
                 .addAnnotatedClass(User.class)
                 .addAnnotatedClass(Session.class)
                 .addAnnotatedClass(Location.class)

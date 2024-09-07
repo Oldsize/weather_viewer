@@ -10,12 +10,14 @@ import com.example.weather_project.model.User;
 import com.example.weather_project.model.WeatherData;
 import com.example.weather_project.service.ExternalWeatherApiService;
 import com.example.weather_project.service.SessionService;
+import com.example.weather_project.utils.WebContextUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.thymeleaf.context.Context;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,19 +27,20 @@ import java.util.Optional;
 @WebServlet(name = "weather_controller", value = "/home/*")
 public class WeatherController extends HttpServlet {
 
-    private ThymeleafConfig thymeleafConfig;
     private SessionService sessionService;
     private UserDAO userDAO;
     private LocationDAO locationDAO;
     private ExternalWeatherApiService externalWeatherApiService;
+    private TemplateEngine templateEngine;
 
     @Override
     public void init() throws ServletException {
         super.init();
-        thymeleafConfig = new ThymeleafConfig();
+        ThymeleafConfig thymeleafConfig = new ThymeleafConfig();
         sessionService = new SessionService();
         userDAO = UserDAO.getInstance();
         locationDAO = LocationDAO.getInstance();
+        templateEngine = thymeleafConfig.getTemplateEngine();
         externalWeatherApiService = new ExternalWeatherApiService();
     }
 
@@ -67,8 +70,8 @@ public class WeatherController extends HttpServlet {
             }
 
             String userName = user.getLogin();
-            Optional<List<Location>> listLocationsOpt = locationDAO.getAddedByUser(userId);
-            List<Location> listLocations = listLocationsOpt.orElse(List.of());
+            Optional<List<Location>> listLocationsOpt;
+            List<Location> listLocations;
 
             String placeNameAttribute = request.getParameter("place");
             WeatherData newWeatherPlace = null;
@@ -98,7 +101,10 @@ public class WeatherController extends HttpServlet {
                 }
             }
 
-            Context context = new Context();
+            listLocationsOpt = locationDAO.getAddedByUser(userId);
+            listLocations = listLocationsOpt.orElse(List.of());
+
+            WebContext context = WebContextUtil.buildWebContext(request, response, getServletContext());
             context.setVariable("listLocations", listLocations);
             context.setVariable("newWeatherPlace", newWeatherPlace);
             context.setVariable("nowWeatherPlace", nowWeatherPlace);
@@ -108,7 +114,7 @@ public class WeatherController extends HttpServlet {
 
             response.setContentType("text/html;charset=UTF-8");
             try (PrintWriter writer = response.getWriter()) {
-                thymeleafConfig.getTemplateEngine().process("/templates/home.html", context, writer);
+                templateEngine.process("home", context, writer);
             }
 
         } catch (OperateDAOException e) {

@@ -39,17 +39,17 @@
 </head>
 <body>
 <div class="top-right-buttons">
-    <a href="/weather_project_war_exploded/reg" class="btn btn-sm">Регистрация</a>
-    <a href="/weather_project_war_exploded/home" class="btn btn-sm">Домой</a>
+    <a href="@{reg}" class="btn btn-sm">Регистрация</a>
+    <a href="@{home}" class="btn btn-sm">Домой</a>
 </div>
 
 <div class="container col-md-4">
     <h2 class="text-center">Авторизация</h2>
 
-    <!-- Thymeleaf директива для обработки ошибок, если таковые имеются -->
+
     <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-    <!-- Форма для авторизации -->
+
     <form th:action="@{/auth}" method="post">
         <div class="mb-3">
             <label for="login" class="form-label">Логин</label>
@@ -66,7 +66,7 @@
     </form>
 
     <div class="text-center mt-3">
-        <p>Нет аккаунта? <a href="/weather_project_war_exploded/reg">Зарегистрируйтесь!</a></p>
+        <p>Нет аккаунта? <a href="@{reg}">Зарегистрируйтесь!</a></p>
     </div>
 </div>
 </body>

@@ -12,9 +12,11 @@ public class ThymeleafConfig {
 
     public ThymeleafConfig() {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setPrefix("");
-        templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
+        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setPrefix("/templates/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setCacheable(false);
         templateResolver.setCacheTTLMs(3600000L);
 
         templateEngine = new TemplateEngine();

@@ -43,10 +43,9 @@
 </head>
 <body>
 <div class="top-right-buttons">
-    <a href="/weather_project_war_exploded/auth" class="btn btn-sm">Авторизация</a>
-    <a href="/weather_project_war_exploded/reg" class="btn btn-sm">Регистрация</a>
-    <!-- Отображаем кнопку "Домой", только если пользователь авторизован -->
-    <a th:if="${session.getAttribute('id') != null}" href="/weather_project_war_exploded/home" class="btn btn-sm">Домой</a>
+    <a href="@{auth}" class="btn btn-sm">Авторизация</a>
+    <a href="@{reg}" class="btn btn-sm">Регистрация</a>
+    <a th:if="${session.getAttribute('id') != null}" href="@{home}/" class="btn btn-sm">Домой</a>
 </div>
 
 <div class="container text-center">

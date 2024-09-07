@@ -25,25 +25,24 @@ public class DeleteLocationController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String userIdParameter = req.getParameter("user_id");
         String locationIdParameter = req.getParameter("location_id");
 
         try {
             if (sessionService.isNonValid(req)) {
-                // Если сессия недействительна, перенаправляем на страницу ошибки
-                resp.sendRedirect(req.getContextPath() + "/error");
+                resp.sendRedirect(req.getContextPath() + "/auth");
                 return;
             }
         } catch (OperateDAOException e) {
-            //
+            req.getRequestDispatcher("/error.html").forward(req, resp);
         }
 
         if (userIdParameter.equals(req.getSession().getAttribute("id").toString())) {
             locationDAO.remove(locationDAO.getById(Integer.parseInt(locationIdParameter)));
             resp.sendRedirect(req.getContextPath() + "/home/");
         } else {
-//            resp.sendRedirect(req.getContextPath() + "/error");
+            req.getRequestDispatcher("/error.html").forward(req, resp);
         }
     }
 }

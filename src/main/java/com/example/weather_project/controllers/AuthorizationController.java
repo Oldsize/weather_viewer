@@ -13,8 +13,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
-import org.thymeleaf.web.IWebExchange;
+
 
 import java.io.IOException;
 import java.util.Optional;
@@ -26,6 +27,7 @@ public class AuthorizationController extends HttpServlet {
     private UserService userService;
     private UserDAO userDAO;
     private SessionService sessionService;
+    private TemplateEngine templateEngine;
 
     @Override
     public void init() throws ServletException {
@@ -34,12 +36,13 @@ public class AuthorizationController extends HttpServlet {
         userService = new UserService();
         userDAO = UserDAO.getInstance();
         sessionService = new SessionService();
+        templateEngine = thymeleafConfig.getTemplateEngine();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         WebContext webContext = WebContextUtil.buildWebContext(request, response, this.getServletContext());
-        thymeleafConfig.getTemplateEngine().process("login", webContext, response.getWriter());
+        templateEngine.process("error", webContext, response.getWriter());
     }
 
     @Override
@@ -47,6 +50,7 @@ public class AuthorizationController extends HttpServlet {
         String login_param = request.getParameter("login");
         String password_param = request.getParameter("password");
         User user = new User(login_param, password_param);
+
 
         Optional<User> user_from_DB = userDAO.get(user);
         int user_id = 0;
