@@ -7,6 +7,7 @@ import com.example.weather_project.utils.PasswordUtils;
 
 import java.util.Optional;
 
+
 public class UserService {
     private final UserDAO userDAO = UserDAO.getInstance();
 
