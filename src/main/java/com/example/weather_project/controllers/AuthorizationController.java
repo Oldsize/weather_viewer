@@ -53,7 +53,7 @@ public class AuthorizationController extends HttpServlet {
 
 
         Optional<User> user_from_DB = userDAO.get(user);
-        int user_id = 0;
+        int user_id;
         if (user_from_DB.isPresent()) {
             user_id = user_from_DB.get().getId();
         } else {
