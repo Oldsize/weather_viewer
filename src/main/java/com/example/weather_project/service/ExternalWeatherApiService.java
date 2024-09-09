@@ -20,12 +20,4 @@ public class ExternalWeatherApiService {
             throw new WeatherNotFoundException();
         }
     }
-
-    public static void main(String[] args) throws WeatherNotFoundException {
-        ExternalWeatherApiService externalWeatherApiService = new ExternalWeatherApiService();
-        WeatherData weatherData = externalWeatherApiService.getWeather("Frankfurt");
-        System.out.println(weatherData.getTempC());
-        System.out.println(weatherData.getFeelsLikeC());
-        System.out.println(weatherData.getPressure());
-    }
 }
