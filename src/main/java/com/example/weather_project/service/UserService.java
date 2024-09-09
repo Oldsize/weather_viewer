@@ -26,7 +26,5 @@ public class UserService {
         User user = new User(login, password);
         user.setPassword(PasswordUtils.hashPassword(user.getPassword()));
         userDAO.add(user);
-        // todo отсюда (из слоя Service) Exception ловится в
-        // todo слое Controller и рендерится ошибка.
     }
 }
